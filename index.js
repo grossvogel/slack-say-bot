@@ -14,6 +14,11 @@ var bot = controller.spawn({
   token: process.env.token
 }).startRTM ();
 
+if (process.env.youtube_key) {
+	var YouTube = require ('./lib/youtube.js');
+	YouTube.init (process.env.youtube_key, controller);
+}
+
 controller.hears (['hello', 'hi', 'sup'], 'direct_message,direct_mention,mention',
   function (bot, message) {
     bot.api.reactions.add({
