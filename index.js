@@ -15,8 +15,8 @@ var bot = controller.spawn({
 }).startRTM ();
 
 if (process.env.youtube_key) {
-	var YouTube = require ('./lib/youtube.js');
-	YouTube.init (process.env.youtube_key, controller);
+  var YouTube = require ('./lib/youtube.js');
+  YouTube.init (process.env.youtube_key, controller);
 }
 
 controller.hears (['hello', 'hi', 'sup'], 'direct_message,direct_mention,mention',
