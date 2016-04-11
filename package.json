@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "jscs ./index.js && jscs ./lib/*"
+    "lint": "jscs ./index.js && jscs ./lib/*.js && jscs ./test/*.js",
+    "test": "mocha test/*.js"
   },
   "author": "",
   "license": "BSD-2-Clause",
@@ -12,6 +13,8 @@
     "botkit": "0.0.15"
   },
   "devDependencies": {
-    "jscs": "~2.11.0"
+    "jscs": "~2.11.0",
+    "mocha": "~2.4.5",
+    "nock": "~8.0.0"
   }
 }

@@ -15,7 +15,7 @@ var bot = controller.spawn({
 }).startRTM();
 
 if (process.env.youtube_key) {
-  var YouTube = require('./lib/youtube.js');
+  var YouTube = require('./lib/youtube');
   YouTube.init(process.env.youtube_key, controller);
 }
 
