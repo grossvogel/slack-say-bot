@@ -11,6 +11,18 @@ describe('Tasks', function() {
     Tasks.init(controller);
   });
 
+  it('should not tell you how to delete tasks if you have none', function(done) {
+    var controller = Test.get_mock_controller();
+    var test_message = get_show_message(false);
+    Tasks.init(controller);
+    Test.test_bot_reply(controller, Tasks.PATTERN_SHOW, test_message, function(reply) {
+      Test.assert.equal(reply.indexOf('[1]'), -1);
+      Test.assert.equal(reply.indexOf('To delete a task'), -1);
+      Test.assert.equal(reply.indexOf(':robot_face: You don\'t'), 0);
+      done();
+    });
+  });
+
   it('should create a task', function(done) {
     var controller = Test.get_mock_controller();
     var task_name = 'Task Number One';
