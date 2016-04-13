@@ -5,11 +5,24 @@ if (!process.env.token) {
 }
 
 var Botkit = require('botkit');
-var os = require('os');
-
-var controller = Botkit.slackbot({
+var Basics = require('./lib/basics');
+var Tasks = require('./lib/tasks');
+var storage_enabled = false;
+var config = {
   debug: true,
-});
+};
+
+if (process.env.file_store) {
+  config.json_file_store = process.env.file_store;
+  storage_enabled = true;
+} else if (process.env.redis_url) {
+  config.storage = require('botkit-storage-redis')({
+    url: process.env.redis_url,
+  });
+  storage_enabled = true;
+}
+
+var controller = Botkit.slackbot(config);
 var bot = controller.spawn({
   token: process.env.token,
 }).startRTM();
@@ -19,36 +32,8 @@ if (process.env.youtube_key) {
   YouTube.init(process.env.youtube_key, controller);
 }
 
-controller.hears(['hello', 'hi', 'sup'], 'direct_message,direct_mention,mention',
-  function(bot, message) {
-    bot.api.reactions.add({
-      timestamp: message.ts,
-      channel: message.channel,
-      name: 'robot_face',
-    }, function(err, res) {
-      if (err) {
-        bot.botkit.log('Failed to add emoji reaction to "hi" message', err);
-      }
-    });
-  }
-);
+if (storage_enabled) {
+  Tasks.init(controller);
+}
 
-controller.hears(['uptime', 'who are you', 'what is your name'],
-  'direct_message,direct_mention,mention', function(bot, message) {
-    var hostname = os.hostname();
-    var uptime = process.uptime();
-    bot.reply(message,
-      ':robot_face: I am a bot named <@' + bot.identity.name + '>.' +
-      'I have been running for ' + uptime + ' seconds on ' + hostname + '.'
-    );
-  }
-);
-
-controller.hears(['say:? (.*)'], 'direct_message,direct_mention,mention',
-  function(bot, message) {
-    bot.reply(message,
-      ':robot_face: ' + message.match[1] + '\n\n' +
-      '(Stop toying with me... I\'m just a helpless bot!)'
-    );
-  }
-);
+Basics.init(controller);
